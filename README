@@ -10,22 +10,22 @@ http://code.google.com/apis/visualization/documentation/reference.html#QueryResp
 Example
 =======
 
-For example, lets say my people table is populated witht the following:
+For example, lets say my people table is populated with the following:
 
-Person.create(:name => "John Doe", :member_since => 5.years.ago, :active => true)
-Person.create(:name => "Jane Doe", :member_since => 4.years.ago, :active => false)
+	Person.create(:name => "John Doe", :member_since => 5.years.ago, :active => true)
+	Person.create(:name => "Jane Doe", :member_since => 4.years.ago, :active => false)
 
 I can now do the following:
 
-class PeopleController
-  def index
-		@people = Person.find(:all)
-		respond_to do |format|
-			format.html
-			format.json { render :json => @people.to_gviz }
+	class PeopleController
+	  def index
+			@people = Person.find(:all)
+			respond_to do |format|
+				format.html
+				format.json { render :json => @people.to_gviz }
+			end
 		end
 	end
-end
 
 A json request from a Google Visualization to that action would now receive the following json:
 
