@@ -1,0 +1,51 @@
+GvizSerializer
+==============
+
+GvizSerializer is a Ruby on Rails plugin that provides serialization of ActiveRecord objects into datasource json as specified by the Google Visualization API:
+
+http://code.google.com/apis/visualization/documentation/reference.html#Query
+http://code.google.com/apis/visualization/documentation/reference.html#QueryResponse
+
+
+Example
+=======
+
+For example, lets say my people table is populated witht the following:
+
+Person.create(:name => "John Doe", :member_since => 5.years.ago, :active => true)
+Person.create(:name => "Jane Doe", :member_since => 4.years.ago, :active => false)
+
+I can now do the following:
+
+class PeopleController
+  def index
+		@people = Person.find(:all)
+		respond_to do |format|
+			format.html
+			format.json { render :json => @people.to_gviz }
+		end
+	end
+end
+
+A json request from a Google Visualization to that action would now receive the following json:
+
+	google.visualization.Query.setResponse({
+		version:'0.5',
+		table:{
+			cols:[
+				{id:'active',label:'Active',type:'boolean'},
+				{id:'member_since',label:'Member since',type:'date'},
+				{id:'name',label:'Name',type:'string'}
+			],
+			rows:[
+				{c:[{v:'true},{v:new Date(2003,1,1)},{v:'John Doe'}]},
+				{c:[{v:'false},{v:new Date(2004,1,1)},{v:'Jane Doe'}]}
+			]
+		}
+	});"
+
+The #to_gviz method also accepts the :only and :except options (just like the Rails methods #to_xml and #to_json) to specify which attributes you wish to be included or excluded.
+
+At this time, #to_gviz does not accept the :methods or :include options.  That is planned for a future release.
+
+Copyright (c) 2008 Marc Love, released under the MIT license
